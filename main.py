@@ -11,8 +11,10 @@ def main():
 	relay.setOff2()
 	while True:
 		if timer.active():
+			log.Add( log.LEVEL_INFO, "Timer ON" )
 			relay.setOn1()
 		else:
+			log.Add( log.LEVEL_INFO, "Timer OFF" )
 			relay.setOff1()
 		time.sleep(settings.UPDATE_INTERVAL_SEC)
 	relay.done()		
@@ -24,4 +26,3 @@ if __name__ == "__main__":
 	ret = main()
 	log.Add( log.LEVEL_INFO, "Done" )
 	sys.exit(ret)
-

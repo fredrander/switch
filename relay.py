@@ -17,20 +17,20 @@ def done():
 
 
 def setOn1():
-	log.Add( log.LEVEL_INFO, "Output 1 On" )
+	log.Add( log.LEVEL_DEBUG, "Output 1 On" )
 	GPIO.output(settings.GPIO_1_OUT_PIN, 0)
 
 
 def setOn2():
-	log.Add( log.LEVEL_INFO, "Output 2 On" )
+	log.Add( log.LEVEL_DEBUG, "Output 2 On" )
 	GPIO.output(settings.GPIO_2_OUT_PIN, 0)
 
 
 def setOff1():
-	log.Add( log.LEVEL_INFO, "Output 1 Off" )
+	log.Add( log.LEVEL_DEBUG, "Output 1 Off" )
 	GPIO.output(settings.GPIO_1_OUT_PIN, 1)
 
 
 def setOff2():
-	log.Add( log.LEVEL_INFO, "Output 2 Off" )
+	log.Add( log.LEVEL_DEBUG, "Output 2 Off" )
 	GPIO.output(settings.GPIO_2_OUT_PIN, 1)

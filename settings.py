@@ -13,6 +13,9 @@ OFF_TIME_DAY_LIST=[
 	datetime.time(0, 30),
 	datetime.time(0, 30),
 	datetime.time(23, 30) ] 
-LOG_FILE="/home/switch/log/switch.log"
+#LOG_FILE="/home/switch/log/switch.log"
+LOG_FILE="switch.log"
 GPIO_1_OUT_PIN=3
 GPIO_2_OUT_PIN=5
+SOCKET_IP=""
+SOCKET_PORT=49444

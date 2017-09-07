@@ -4,7 +4,7 @@ LATITUDE=57.743703
 LONGITUDE=14.383779
 TIME_ZONE="Europe/Stockholm"
 UPDATE_INTERVAL_SEC=60
-ON_TIME_DIFF_SUNSET_SEC=0
+ON_TIME_DIFF_SUNSET=datetime.timedelta( minutes = -15 )
 OFF_TIME_DAY_LIST=[ 
 	datetime.time(23, 30), 
 	datetime.time(23, 30), 

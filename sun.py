@@ -114,8 +114,3 @@ class sun:
   self.sunrise_t  =self.solarnoon_t-hourangle*4/1440
   self.sunset_t   =self.solarnoon_t+hourangle*4/1440
 
-if __name__ == "__main__":
- s = sun( lat=57.743696, long=14.383768 )
- tz = pytz.timezone("Europe/Stockholm")
- d = tz.localize( datetime.today() )
- print("Up: {}\nDown: {}".format(s.sunrise(d), s.sunset(d)))

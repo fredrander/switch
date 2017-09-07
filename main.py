@@ -1,12 +1,14 @@
 import time
 import log
 import relay
+import externalifc
 import timer
 import sys
 import settings
 
 
 def main():
+	externalifc.init()
 	relay.init()
 	relay.setOff2()
 	while True:

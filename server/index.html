@@ -1,0 +1,50 @@
+<html>
+	<head>
+		<style>
+			img {
+				display: block;
+				margin: 0 auto;
+			}
+		</style>
+	</head>
+	<body style="background-color:#181818">
+		<div style="width=100%; height=100%;">
+			<img id="switchImg" src="" onclick="toggleSwitch()"/>
+		</div>
+	</body>
+	<script>
+		var onImg= "power_button_green.png";
+		var offImg= "power_button_red.png";
+		var on = false;
+
+		function currImg() {
+			if (on) {
+				return onImg;
+			} else {
+				return offImg;
+			}
+		}
+
+		document.getElementById("switchImg").src = currImg();
+		function toggleSwitch() {
+			on = !on;
+			document.getElementById("switchImg").src = currImg();
+			reqSetSwitch(on);
+		}
+
+
+		function rspSetSwitch() {
+		}
+
+
+		function reqSetSwitch(on) {
+			var req = new XMLHttpRequest();
+			req.addEventListener("load", rspSetSwitch);
+			req.open("GET", "setswitch.php?on=" + on, true);
+			req.send();
+		}
+
+	</script>
+
+</html>
+

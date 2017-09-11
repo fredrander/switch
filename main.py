@@ -14,28 +14,64 @@ def _cbExtIfcOn():
 	global _manualOverride
 	_manualOverride = True
 	log.Add( log.LEVEL_INFO, "Manual switch ON" )
-	relay.setOn1()
+	relay.setOn()
+	return "OK"
 
 
 def _cbExtIfcOff():
 	global _manualOverride
 	_manualOverride = True
 	log.Add( log.LEVEL_INFO, "Manual switch OFF" )
-	relay.setOff1()
+	relay.setOff()
+	return "OK"
+
+
+def _cbExtIfcTimer():
+	global _manualOverride
+	_manualOverride = False
+	log.Add( log.LEVEL_INFO, "Timer mode ON" )
+	if timer.active():
+		log.Add( log.LEVEL_INFO, "Timer ON" )
+		relay.setOn()
+	else:
+		log.Add( log.LEVEL_INFO, "Timer OFF" )
+		relay.setOff()
+	return "OK"
+
+
+def _cbExtIfcState():
+	rsp = ""
+	isOn = relay.isOn()
+	if _manualOverride:
+		if isOn:
+			rsp = "SWITCH=ON"
+		else:
+			rsp = "SWITCH=OFF"
+	else:
+		if isOn:
+			rsp = "SWITCH=TIMER;STATE=ON"
+		else:
+			rsp = "SWITCH=TIMER;STATE=OFF"
+	return rsp
 
 
 def main():
-	externalifc.init( _cbExtIfcOn, _cbExtIfcOff )
+	# setup callback dictionary
+	cb = { "on" : _cbExtIfcOn,
+		"off" : _cbExtIfcOff,
+		"timer" : _cbExtIfcTimer,
+		"?" : _cbExtIfcState 
+	}
+	externalifc.init( cb )
 	relay.init()
-	relay.setOff2()
 	while True:
 		if not _manualOverride:
 			if timer.active():
 				log.Add( log.LEVEL_INFO, "Timer ON" )
-				relay.setOn1()
+				relay.setOn()
 			else:
 				log.Add( log.LEVEL_INFO, "Timer OFF" )
-				relay.setOff1()
+				relay.setOff()
 		time.sleep(settings.UPDATE_INTERVAL_SEC)
 	relay.done()		
 	return 0
@@ -46,3 +82,4 @@ if __name__ == "__main__":
 	ret = main()
 	log.Add( log.LEVEL_INFO, "Done" )
 	sys.exit(ret)
+

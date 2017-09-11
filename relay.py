@@ -3,34 +3,39 @@ import settings
 import RPi.GPIO as GPIO
 
 
+def _setOut( p, state ):
+	log.Add( log.LEVEL_DEBUG, "Set pin {} to state {}".format( p, state ) )
+	GPIO.output( p, state )
+
+ 
 def init():
 	GPIO.setwarnings(False)
 	GPIO.setmode(GPIO.BOARD)
-	GPIO.setup(settings.GPIO_1_OUT_PIN, GPIO.OUT)
-	GPIO.setup(settings.GPIO_2_OUT_PIN, GPIO.OUT)
+	for p in settings.GPIO_CONTROLLED_OUT_PINS:
+		GPIO.setup(p, GPIO.OUT)
 
 
 def done():
-	setOff1()
-	setOff2()
+	setOff()
 	GPIO.cleanup()
 
 
-def setOn1():
-	log.Add( log.LEVEL_DEBUG, "Output 1 On" )
-	GPIO.output(settings.GPIO_1_OUT_PIN, 0)
+def setOn():
+	for p in settings.GPIO_CONTROLLED_OUT_PINS:
+		_setOut( p, 0 )
 
 
-def setOn2():
-	log.Add( log.LEVEL_DEBUG, "Output 2 On" )
-	GPIO.output(settings.GPIO_2_OUT_PIN, 0)
+def setOff():
+	for p in settings.GPIO_CONTROLLED_OUT_PINS:
+		_setOut( p, 1 )
 
 
-def setOff1():
-	log.Add( log.LEVEL_DEBUG, "Output 1 Off" )
-	GPIO.output(settings.GPIO_1_OUT_PIN, 1)
+def isOn():
+	pinValue = 0
+	for p in settings.GPIO_CONTROLLED_OUT_PINS:
+		pinValue = GPIO.input( p )
+	if pinValue == 0:
+		return True
+	else:
+		return False
 
-
-def setOff2():
-	log.Add( log.LEVEL_DEBUG, "Output 2 Off" )
-	GPIO.output(settings.GPIO_2_OUT_PIN, 1)

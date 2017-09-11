@@ -1,12 +1,14 @@
 <?php
 
-$on=$_GET["on"];
+$mode=$_GET["mode"];
 
 $cmdStr="";
-if ($on=="true" or $on=="1") {
+if ($mode=="1") {
 	$cmdStr="SWITCH=ON";
-} else {
+} else if ($mode=="0") {
 	$cmdStr="SWITCH=OFF";
+} else if ($mode=="2") {
+	$cmdStr="SWITCH=TIMER";
 }
 
 $s=socket_create( AF_INET, SOCK_STREAM, SOL_TCP );

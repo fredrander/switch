@@ -11,40 +11,89 @@
 		<div style="width=100%; height=100%;">
 			<img id="switchImg" src="" onclick="toggleSwitch()"/>
 		</div>
-	</body>
-	<script>
-		var onImg= "power_button_green.png";
-		var offImg= "power_button_red.png";
-		var on = false;
+		<script>
+			var onImg= "power_button_green.png";
+			var offImg= "power_button_red.png";
+			var timerOnImg= "power_button_blue.png";
+			var timerOffImg= "power_button_orange.png";
+			var mode = -1;
+			var state = 0;
 
-		function currImg() {
-			if (on) {
-				return onImg;
-			} else {
-				return offImg;
+			function currImg() {
+				var result = "";
+				if (mode == 1) {
+					result = onImg;
+				} else if (mode == 0) {
+					result = offImg;
+				} else if (mode == 2) {
+					if (state == 1) {
+						result = timerOnImg;
+					} else if (state == 0) {
+						result = timerOffImg;
+					}
+				}
+
+				return result;
 			}
-		}
 
-		document.getElementById("switchImg").src = currImg();
-		function toggleSwitch() {
-			on = !on;
-			document.getElementById("switchImg").src = currImg();
-			reqSetSwitch(on);
-		}
+			function toggleSwitch() {
+				mode = (mode + 1) % 3;
+				state = 2; // unknown on state
+				document.getElementById("switchImg").src = currImg();
+				reqSetSwitch(mode);
+			}
 
+			function rspSetSwitch() {
+				reqGetSwitch();
+			}
 
-		function rspSetSwitch() {
-		}
+			function reqSetSwitch(mode) {
+				var req = new XMLHttpRequest();
+				req.addEventListener("load", rspSetSwitch);
+				req.open("GET", "setswitch.php?mode=" + mode, true);
+				req.send();
+			}
 
+			function rspGetSwitch() {
+				rspStr = JSON.parse(this.responseText);
+				var rsp = rspStr.split( ";" );
+				if (rsp.length < 1) {
+					return;
+				}
+				if (rsp[0] == "SWITCH=ON") {
+					mode = 1;
+					state = 1;
+				} else if (rsp[0] == "SWITCH=OFF") {
+					mode = 0;
+					state = 0;
+				} else if (rsp[0] == "SWITCH=TIMER") {
+					mode = 2;
+					if (rsp.length < 2) {
+						return;
+					}
+					if (rsp[1] == "STATE=ON") {
+						state = 1;
+					} else if (rsp[1] == "STATE=OFF") {
+						state = 0;
+					}
+				}
+				document.getElementById("switchImg").src = currImg();
+			}
 
-		function reqSetSwitch(on) {
-			var req = new XMLHttpRequest();
-			req.addEventListener("load", rspSetSwitch);
-			req.open("GET", "setswitch.php?on=" + on, true);
-			req.send();
-		}
-
-	</script>
+			function reqGetSwitch() {
+				var req = new XMLHttpRequest();
+				req.addEventListener("load", rspGetSwitch);
+				req.open("GET", "getswitch.php", true);
+				req.send();
+			}
+			
+			window.onload=function() {
+				reqGetSwitch();
+				setInterval(reqGetSwitch, 5000);
+			}
+	
+		</script>
+	</body>
 
 </html>
 

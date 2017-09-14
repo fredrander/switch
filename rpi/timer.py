@@ -2,126 +2,101 @@ import log
 import pytz
 import settings
 import datetime
-import sun
+import calendar
+from sunrise_sunset import SunriseSunset
 
 
-def _getLocalDateTime():
-	tz = pytz.timezone( settings.TIME_ZONE )
-	dt = datetime.datetime.now()
-	result = tz.localize( dt )
-	return result
+def _nearestDateTime( dateTime, candidates ):
+	best = None
+	bestAbsDiffSec = None
+	for c in candidates:
+		absDiffSec = abs( (c - dateTime).total_seconds() )
+		if not bestAbsDiffSec or absDiffSec < bestAbsDiffSec:
+			bestAbsDiffSec = absDiffSec
+			best = c
+	return best
+
+	
+def _getSunriseSunset( now ):
+	# calculate sunrise/sunset for today, tomorrow and yesterday
+	sunriseToday, sunsetToday = SunriseSunset(now, latitude = settings.LATITUDE, longitude = settings.LONGITUDE).calculate()
+	sunriseTomorrow, sunsetTomorrow = SunriseSunset(now + datetime.timedelta( days=1 ), latitude = settings.LATITUDE, longitude = settings.LONGITUDE).calculate()
+	sunriseYesterday, sunsetYesterday = SunriseSunset(now - datetime.timedelta( days=1 ), latitude = settings.LATITUDE, longitude = settings.LONGITUDE).calculate()
+
+	# select nearest sunrise/sunset(!)
+	sunrise = _nearestDateTime(now, [sunriseToday, sunriseTomorrow, sunriseYesterday])
+	sunset = _nearestDateTime(now, [sunsetToday, sunsetTomorrow, sunsetYesterday])
+	return sunrise, sunset
 
 
-def _getSunriseSunset( localDateTime ):
-	s = sun.sun( lat = settings.LATITUDE, long = settings.LONGITUDE )
-	sunrise = s.sunrise(localDateTime)
-	noon = s.solarnoon(localDateTime)
-	sunset = s.sunset(localDateTime)
-	result = {}
-	result["sunrise"] = sunrise
-	result["noon"] = noon
-	result["sunset"] = sunset
-	return result
+def _getOnPeriodSunset( sunset ):
+	# start based on sunset
+	start = sunset + settings.SUNSET_ON_TIME_DIFF
+	weekday = start.weekday()
+	stop = datetime.datetime.combine( start.date(), settings.SUNSET_OFF_TIME_DAY_LIST[weekday] )
+	# convert local to UTC
+	tz = pytz.timezone (settings.TIME_ZONE)
+	stop = tz.localize(stop, is_dst=None).astimezone(pytz.utc).replace(tzinfo=None)
+	# check if next day
+	if stop < start:
+		stop = stop + datetime.timedelta( days=1 )
+	return start, stop
 
 
-def _isSunUp( localDateTime, sunriseSunset ):
-	t = localDateTime.time()
-	sr = sunriseSunset["sunrise"]
-	sn = sunriseSunset["noon"]
-	ss = sunriseSunset["sunset"]
-	log.Add( log.LEVEL_DEBUG, "Sunrise: {}, Noon: {}, Sunset: {}, Now: {}".format( sr, sn, ss, t ) )
-	result = True
-	if sn >= sr:
-		if sn <= ss:
-			result = t > sr and t < ss
+def _getOnPeriodSunrise( sunrise ):
+	# stop based on sunrise
+	stop = sunrise + settings.SUNRISE_OFF_TIME_DIFF
+	weekday = stop.weekday()
+	start = datetime.datetime.combine( stop.date(), settings.SUNRISE_ON_TIME_DAY_LIST[weekday] )
+	# convert local to UTC
+	tz = pytz.timezone (settings.TIME_ZONE)
+	start = tz.localize(start, is_dst=None).astimezone(pytz.utc).replace(tzinfo=None)
+	# check if prev day
+	if stop < start:
+		start = start - datetime.timedelta( days=1 )
+	return start, stop
+
+
+def active( nowUtc = None ):
+	# get current date/time
+	now = nowUtc
+	if not now:
+		now = datetime.datetime.utcnow()
+	# get sunrise/sunset
+	sunrise, sunset = _getSunriseSunset( now )
+	log.Add(log.LEVEL_DEBUG, "Now: {} {} UTC, Sunrise: {} UTC, Sunset: {} UTC".format( calendar.day_abbr[now.weekday()], now, sunrise, sunset))
+	# get timer start/stop at sunset
+	startSunset, stopSunset = _getOnPeriodSunset( sunset )
+	log.Add(log.LEVEL_DEBUG, "Active period at sunset, start: {} UTC, stop: {} UTC".format(startSunset, stopSunset))
+	# get timer start/stop at sunrise
+	startSunrise, stopSunrise = _getOnPeriodSunrise( sunrise )
+	log.Add(log.LEVEL_DEBUG, "Active period at sunrise, start: {} UTC, stop: {} UTC".format(startSunrise, stopSunrise))
+	result = False
+	if settings.SUNSET_TIMER_ACTIVE:
+		if now >= startSunset and now < stopSunset:
+			log.Add( log.LEVEL_DEBUG, "Timer active at sunset" )
+			result = True
 		else:
-			result = t > sr or t < ss
-	else:
-		result = t > sr or t < ss
+			log.Add( log.LEVEL_DEBUG, "Timer inactive at sunset" )
+
+	if settings.SUNRISE_TIMER_ACTIVE:
+		if now >= startSunrise and now < stopSunrise:
+			log.Add( log.LEVEL_DEBUG, "Timer active at sunrise" )
+			result = True
+		else:
+			log.Add( log.LEVEL_DEBUG, "Timer inactive at sunrise" )
 	return result
 
-
-def _timeUntilSunset( localDateTime, sunriseSunset ):
-	t = localDateTime.time()
-	ssTime = sunriseSunset["sunset"]
-	ss = None
-	if ssTime < t:
-		# sunset tomorrow
-		ss = datetime.datetime.combine( localDateTime.date() + datetime.timedelta( days = 1), ssTime )
-	else:
-		ss = datetime.datetime.combine( localDateTime.date(), ssTime )
-
-	tz = pytz.timezone( settings.TIME_ZONE )
-	ss = tz.localize( ss )
-	return (ss - localDateTime)
-
-
-def _timeAfterSunset( localDateTime, sunriseSunset ):
-	t = localDateTime.time()
-	ssTime = sunriseSunset["sunset"]
-	ss = None
-	if ssTime > t:
-		# sunset yesterday
-		ss = datetime.datetime.combine( localDateTime.date() - datetime.timedelta( days = 1), ssTime )
-	else:
-		ss = datetime.datetime.combine( localDateTime.date(), ssTime )
-
-	tz = pytz.timezone( settings.TIME_ZONE )
-	ss = tz.localize( ss )
-	return (localDateTime - ss)
-
-
-def _checkActiveEnd( localDateTime, sunriseSunset ):
-	# try to figure out when active period begun
-	tActivate = (datetime.datetime.combine(localDateTime.date(), sunriseSunset["sunset"]) + settings.ON_TIME_DIFF_SUNSET).time()
-	dtActivate = datetime.datetime.combine( localDateTime.date(), tActivate )
-	tz = pytz.timezone( settings.TIME_ZONE )
-	dtActivate = tz.localize( dtActivate )
-	if dtActivate > localDateTime:
-		# yesterday
-		dtActivate = dtActivate - datetime.timedelta( days = 1 )
-	log.Add( log.LEVEL_DEBUG, "Active period started {}".format(dtActivate) )
-	wDay = dtActivate.weekday()
-	tEnd = settings.OFF_TIME_DAY_LIST[wDay]
-	dtEnd = datetime.datetime.combine( dtActivate.date(), tEnd )
-	if tEnd < tActivate:
-		# end day after activate
-		dtEnd = dtEnd + datetime.timedelta( days = 1 )
-	dtEnd = tz.localize( dtEnd ) 
-	log.Add( log.LEVEL_DEBUG, "Active period off time {}".format(dtEnd) )
-	return localDateTime >= dtEnd
-
-
-def active():
-	dt = _getLocalDateTime()
-	s = _getSunriseSunset(dt)
-	sunUp = _isSunUp(dt, s)
-	ssDiffSec = 0
-	if sunUp:
-		ssDiff = _timeUntilSunset(dt, s)
-		ssDiffSec = -1 * ssDiff.total_seconds()
-		log.Add( log.LEVEL_DEBUG, "Sun is up, time before sunset {}".format(ssDiff) )
-	else:
-		ssDiff = _timeAfterSunset(dt, s)
-		ssDiffSec = ssDiff.total_seconds()
-		log.Add( log.LEVEL_DEBUG, "Sun is down, time after sunset {}".format(ssDiff) )
-	
-	activeDiffSec = settings.ON_TIME_DIFF_SUNSET.total_seconds()
-	if activeDiffSec < 0:
-		log.Add( log.LEVEL_DEBUG, "Timer shall be active {} sec. before sunset".format(-1 * activeDiffSec) )
-	else:
-		log.Add( log.LEVEL_DEBUG, "Timer shall be active {} sec. after sunset".format(activeDiffSec) )
-	active = ssDiffSec >= settings.ON_TIME_DIFF_SUNSET.total_seconds()
-	
-	# if active check if active period has ended
-	if active:
-		active = not _checkActiveEnd(dt, s)
-		
-	return active
 
 if __name__ == "__main__":
-	ret = active()
-	if ret:
-		log.Add( log.LEVEL_INFO, "Timer active" )
-	else:
-		log.Add( log.LEVEL_INFO, "Timer inactive" )
+	start = datetime.datetime.utcnow()
+	stop = start + datetime.timedelta( days=1 )
+	step = datetime.timedelta( hours=1 )
+	curr = start
+	while curr <= stop:
+		ret = active(curr)
+		if ret:
+			log.Add( log.LEVEL_INFO, "Timer active" )
+		else:
+			log.Add( log.LEVEL_INFO, "Timer inactive" )
+		curr = curr + step

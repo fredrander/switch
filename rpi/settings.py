@@ -6,8 +6,9 @@ TIME_ZONE="Europe/Stockholm"
 
 UPDATE_INTERVAL_SEC=60
 
-ON_TIME_DIFF_SUNSET=datetime.timedelta( minutes = 0 )
-OFF_TIME_DAY_LIST=[ 
+SUNSET_TIMER_ACTIVE=True
+SUNSET_ON_TIME_DIFF=datetime.timedelta( minutes = 0 )
+SUNSET_OFF_TIME_DAY_LIST=[ 
 	datetime.time(23, 30), 
 	datetime.time(23, 30), 
 	datetime.time(23, 30),
@@ -15,6 +16,18 @@ OFF_TIME_DAY_LIST=[
 	datetime.time(0, 30),
 	datetime.time(0, 30),
 	datetime.time(23, 30) ] 
+
+SUNRISE_TIMER_ACTIVE=False
+SUNRISE_OFF_TIME_DIFF=datetime.timedelta( days = 0 )
+SUNRISE_ON_TIME_DAY_LIST=[ 
+	datetime.time(6, 0), 
+	datetime.time(6, 0), 
+	datetime.time(6, 0),
+	datetime.time(6, 0),
+	datetime.time(6, 0),
+	datetime.time(9, 0),
+	datetime.time(9, 0) ] 
+
 LOG_FILE="/home/switch/log/switch.log"
 
 GPIO_1_OUT_PIN=3

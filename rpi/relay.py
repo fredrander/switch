@@ -4,7 +4,7 @@ import RPi.GPIO as GPIO
 
 
 def _setOut( p, state ):
-	log.Add( log.LEVEL_DEBUG, "Set pin {} to state {}".format( p, state ) )
+	log.add( log.LEVEL_DEBUG, "Set pin {} to state {}".format( p, state ) )
 	GPIO.output( p, state )
 
  

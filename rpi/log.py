@@ -13,7 +13,7 @@ LEVEL_ERROR = "E"
 # global variables
 _level = LEVEL_INFO
 
-def _CheckLevel( level ):
+def _checkLevel( level ):
 	global _level
 	if _level == LEVEL_TRACE:
 		return True
@@ -27,13 +27,14 @@ def _CheckLevel( level ):
 		return level == level == LEVEL_ERROR
 	
 
-def SetLevel( level ):
+def setLevel( level ):
 	global _level
 	_level = level
+	add( LEVEL_INFO, "New log level: {}".format(_level) )
 	
 	
-def Add( level, msg ):
-	if not _CheckLevel( level ):
+def add( level, msg ):
+	if not _checkLevel( level ):
 		return
 	
 	# replace illegal chars in message

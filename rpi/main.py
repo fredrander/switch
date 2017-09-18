@@ -5,6 +5,8 @@ import externalifc
 import timer
 import sys
 import settings
+import threading
+import wifi
 
 
 _manualOverride = False
@@ -55,6 +57,23 @@ def _cbExtIfcState():
 	return rsp
 
 
+def _updateSwitch():
+	if not _manualOverride:
+		if timer.active():
+			log.add( log.LEVEL_INFO, "Timer ON" )
+			relay.setOn()
+		else:
+			log.add( log.LEVEL_INFO, "Timer OFF" )
+			relay.setOff()
+	threading.Timer(settings.UPDATE_INTERVAL_SEC, _updateSwitch).start()
+
+
+def _checkWifi():
+	if not wifi.check():
+		wifi.restart()
+	threading.Timer(settings.CHECK_WIFI_INTERVAL_SEC, _checkWifi).start()
+
+
 def main():
 	# setup callback dictionary
 	cb = { "on" : _cbExtIfcOn,
@@ -64,15 +83,10 @@ def main():
 	}
 	externalifc.init( cb )
 	relay.init()
+	_updateSwitch()
+	_checkWifi()
 	while True:
-		if not _manualOverride:
-			if timer.active():
-				log.add( log.LEVEL_INFO, "Timer ON" )
-				relay.setOn()
-			else:
-				log.add( log.LEVEL_INFO, "Timer OFF" )
-				relay.setOff()
-		time.sleep(settings.UPDATE_INTERVAL_SEC)
+		time.sleep(999)
 	relay.done()		
 	return 0
 

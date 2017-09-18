@@ -1,0 +1,36 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          switch
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: switch
+# Description:       switch
+### END INIT INFO
+
+touch /var/lock/switch
+
+case "$1" in
+	start)
+		echo "Starting script switch"
+		/home/switch/switch.sh --start
+		;;
+	stop)
+		echo "Stopping script switch"
+		/home/switch/switch.sh --stop
+		;;
+	restart)
+		echo "Restarting script switch"
+		/home/switch/switch.sh --stop
+		/home/switch/switch.sh --start
+		;;
+	*)
+		echo "Usage: /etc/init.d/switch {start|stop|restart}"
+		exit 1
+		;;
+esac
+
+exit 0
+

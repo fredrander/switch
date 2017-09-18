@@ -5,6 +5,7 @@ LONGITUDE=14.383779
 TIME_ZONE="Europe/Stockholm"
 
 UPDATE_INTERVAL_SEC=60
+CHECK_WIFI_INTERVAL_SEC=20
 
 SUNSET_TIMER_ACTIVE=True
 SUNSET_ON_TIME_DIFF=datetime.timedelta( minutes = 0 )
@@ -36,3 +37,7 @@ GPIO_CONTROLLED_OUT_PINS=[GPIO_2_OUT_PIN]
 
 SOCKET_IP=""
 SOCKET_PORT=49444
+
+WIFI_CHECK_SCRIPT="/home/switch/checkwifi.sh"
+WIFI_RESTART_SCRIPT="/home/switch/restartwifi.sh"
+

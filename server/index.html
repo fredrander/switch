@@ -2,14 +2,34 @@
 	<head>
 		<style>
 			img {
+				max-width: 90%;
+				max-height: 90%;
+				margin-left: auto;
+				margin-right: auto;
 				display: block;
-				margin: 0 auto;
+			}
+			.ontext {
+				font-size: 2em;
+				color: #729fcf;
+				font-family: Arial;
+				text-shadow: #d6e3f1 0 0 2px;
+				text-align: center;
+				font-weight: bold;
+			}
+			.offtext {
+				font-size: 2em;
+				color: #f57900;
+				font-family: Arial;
+				text-shadow: #fab97a 0 0 2px;
+				text-align: center;
+				font-weight: bold;
 			}
 		</style>
 	</head>
 	<body style="background-color:#181818">
 		<div style="width=100%; height=100%;">
 			<img id="switchImg" src="" onclick="toggleSwitch()"/>
+			<p id="switchTxt" class="ontext"></p>
 		</div>
 		<script>
 			var onImg= "power_button_green.png";
@@ -18,6 +38,8 @@
 			var timerOffImg= "power_button_orange.png";
 			var mode = -1;
 			var state = 0;
+			var timeStr = "";
+			var timeStrClass = "ontext";
 
 			function currImg() {
 				var result = "";
@@ -54,30 +76,100 @@
 				req.send();
 			}
 
+			function isoDateTimeUtcStr2Date( utcDateTimeStr ) {
+				var utcDateTime = new Date( utcDateTimeStr );
+				return utcDateTime;
+			}
+
+			function isoDateTimeUtcStr2LocalTimeStr( utcDateTimeStr ) {
+				var utcDateTime = new Date( utcDateTimeStr );
+				return utcDateTime.toLocaleTimeString();
+			}
+
 			function rspGetSwitch() {
+				// Example response:
+				// SWITCH=TIMER;STATE=ON;SUNRISEACTIVE=FALSE;SUNRISESTART=2017-10-26T04:30:00;
+				// SUNRISESTOP=2017-10-26T06:00:00;SUNSETACTIVE=TRUE;SUNSETSTART=2017-10-25T15:33:00;
+				// SUNSETSTOP=2017-10-25T21:30:00
 				rspStr = JSON.parse(this.responseText);
+				// create dictonary 
 				var rsp = rspStr.split( ";" );
-				if (rsp.length < 1) {
-					return;
+				var rspDict = {};
+				for ( i = 0; i < rsp.length; i++ ) {
+					var rspKeyValue = rsp[ i ].split( "=" );
+					if ( rspKeyValue.length > 1 ) {
+						rspDict[ rspKeyValue[ 0 ] ] = rspKeyValue[ 1 ];
+					}
 				}
-				if (rsp[0] == "SWITCH=ON") {
+
+				timeStr = "";
+				
+				if ( rspDict[ "SWITCH" ] == "ON" ) {
 					mode = 1;
 					state = 1;
-				} else if (rsp[0] == "SWITCH=OFF") {
+				} else if ( rspDict[ "SWITCH" ] == "OFF" ) {
 					mode = 0;
 					state = 0;
-				} else if (rsp[0] == "SWITCH=TIMER") {
+				} else if ( rspDict[ "SWITCH" ] == "TIMER" ) {
 					mode = 2;
-					if (rsp.length < 2) {
-						return;
-					}
-					if (rsp[1] == "STATE=ON") {
+					if ( rspDict[ "STATE" ] == "ON" ) {
+						timeStrClass = "ontext";
 						state = 1;
-					} else if (rsp[1] == "STATE=OFF") {
+						if ( rspDict[ "SUNRISEACTIVE" ] == "TRUE" ) {
+							timeStr = isoDateTimeUtcStr2LocalTimeStr( rspDict[ "SUNRISESTART" ] ) + 
+							" - " +
+							isoDateTimeUtcStr2LocalTimeStr( rspDict[ "SUNRISESTOP" ] );
+						} else if ( rspDict[ "SUNSETACTIVE" ] == "TRUE" ) {
+							timeStr = isoDateTimeUtcStr2LocalTimeStr( rspDict[ "SUNSETSTART" ] ) + 
+							" - " +
+							isoDateTimeUtcStr2LocalTimeStr( rspDict[ "SUNSETSTOP" ] );
+						}
+					} else if ( rspDict[ "STATE" ] == "OFF" ) {
+						timeStrClass = "offtext";
 						state = 0;
+						var nowUtc = new Date().getTime();
+						var startSunrise = null;
+						var startSunset = null;
+						var comingPeriod = "";
+						if ( "SUNRISEACTIVE" in rspDict ) {
+							startSunrise = isoDateTimeUtcStr2Date( rspDict[ "SUNRISESTART" ] );
+						}
+						if ( "SUNSETACTIVE" in rspDict ) {
+							startSunset = isoDateTimeUtcStr2Date( rspDict[ "SUNSETSTART" ] );
+						}
+						if ( startSunrise && startSunset && startSunrise >= nowUtc && startSunset >= nowUtc ) {
+							if ( startSunrise < startSunset ) {
+								comingPeriod = "SUNRISE";
+							} else {
+								comingPeriod = "SUNSET";
+							}
+						} else if ( startSunrise && startSunset ) {
+							if ( startSunrise >= nowUtc ) {
+								comingPeriod = "SUNRISE";
+							} else {
+								comingPeriod = "SUNSET";
+							}
+						} else if ( startSunrise && startSunrise >= nowUtc ) {
+							comingPeriod = "SUNRISE";
+						} else if ( startSunset && startSunset >= nowUtc ) {
+							comingPeriod = "SUNSET";
+						}
+
+						if ( comingPeriod == "SUNRISE" ) {
+							timeStr = isoDateTimeUtcStr2LocalTimeStr( rspDict[ "SUNRISESTART" ] ) + 
+							" - " +
+							isoDateTimeUtcStr2LocalTimeStr( rspDict[ "SUNRISESTOP" ] );
+						} else if ( comingPeriod == "SUNSET" ) {
+							timeStr = isoDateTimeUtcStr2LocalTimeStr( rspDict[ "SUNSETSTART" ] ) + 
+							" - " +
+							isoDateTimeUtcStr2LocalTimeStr( rspDict[ "SUNSETSTOP" ] );
+						}
 					}
 				}
+
 				document.getElementById("switchImg").src = currImg();
+				document.getElementById("switchTxt").className = timeStrClass;
+				document.getElementById("switchTxt").innerHTML = timeStr;
 			}
 
 			function reqGetSwitch() {

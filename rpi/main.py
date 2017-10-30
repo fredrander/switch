@@ -44,16 +44,26 @@ def _cbExtIfcTimer():
 def _cbExtIfcState():
 	rsp = ""
 	isOn = relay.isOn()
+	periods = timer.activePeriods()
+	periodsStr = ""
+	if "sunrise" in periods:
+		# add Z to indicate UTC date time in ISO format
+		periodsStr += ";SUNRISEACTIVE={};SUNRISESTART={}Z;SUNRISESTOP={}Z".format( 
+			periods["sunrise"]["active"], periods["sunrise"]["start"].isoformat(), periods["sunrise"]["stop"].isoformat() )
+	if "sunset" in periods:
+		periodsStr += ";SUNSETACTIVE={};SUNSETSTART={}Z;SUNSETSTOP={}Z".format( 
+			periods["sunset"]["active"], periods["sunset"]["start"].isoformat(), periods["sunset"]["stop"].isoformat() )
+	periodsStr = periodsStr.upper()
 	if _manualOverride:
 		if isOn:
-			rsp = "SWITCH=ON"
+			rsp = "SWITCH=ON" + periodsStr
 		else:
-			rsp = "SWITCH=OFF"
+			rsp = "SWITCH=OFF" + periodsStr
 	else:
 		if isOn:
-			rsp = "SWITCH=TIMER;STATE=ON"
+			rsp = "SWITCH=TIMER;STATE=ON" + periodsStr
 		else:
-			rsp = "SWITCH=TIMER;STATE=OFF"
+			rsp = "SWITCH=TIMER;STATE=OFF" + periodsStr
 	return rsp
 
 

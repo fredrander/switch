@@ -57,7 +57,7 @@ def _getOnPeriodSunrise( sunrise ):
 	return start, stop
 
 
-def active( nowUtc = None ):
+def activePeriods( nowUtc = None ):
 	# get current date/time
 	now = nowUtc
 	if not now:
@@ -69,22 +69,35 @@ def active( nowUtc = None ):
 	startSunset, stopSunset = _getOnPeriodSunset( sunset )
 	# get timer start/stop at sunrise
 	startSunrise, stopSunrise = _getOnPeriodSunrise( sunrise )
-	result = False
+	result = {}
 	if settings.SUNSET_TIMER_ACTIVE:
 		log.add(log.LEVEL_DEBUG, "Active period at sunset, start: {} UTC, stop: {} UTC".format(startSunset, stopSunset))
 		if now >= startSunset and now < stopSunset:
 			log.add( log.LEVEL_DEBUG, "Timer active at sunset" )
-			result = True
+			result["sunset"] = { "active" : True, "start" : startSunset, "stop" : stopSunset }
 		else:
 			log.add( log.LEVEL_DEBUG, "Timer inactive at sunset" )
+			result["sunset"] = { "active" : False, "start" : startSunset, "stop" : stopSunset }
 
 	if settings.SUNRISE_TIMER_ACTIVE:
 		log.add(log.LEVEL_DEBUG, "Active period at sunrise, start: {} UTC, stop: {} UTC".format(startSunrise, stopSunrise))
 		if now >= startSunrise and now < stopSunrise:
 			log.add( log.LEVEL_DEBUG, "Timer active at sunrise" )
-			result = True
+			result["sunrise"] = { "active" : True, "start" : startSunrise, "stop" : stopSunrise }
 		else:
 			log.add( log.LEVEL_DEBUG, "Timer inactive at sunrise" )
+			result["sunrise"] = { "active" : False, "start" : startSunrise, "stop" : stopSunrise }
+	return result
+
+
+def active( nowUtc = None ):
+	# get active periods
+	periods = activePeriods( nowUtc )
+	result = False
+	if "sunset" in periods:
+		result = result or periods["sunset"]["active"]
+	if "sunrise" in periods:
+		result = result or periods["sunrise"]["active"]
 	return result
 
 
@@ -92,8 +105,8 @@ if __name__ == "__main__":
 	log.setLevel(log.LEVEL_DEBUG)
 	log.add( log.LEVEL_INFO, "=========== Timer test start ===========" )
 	start = datetime.datetime.utcnow()
-	start = datetime.datetime(2017,5,11)
-	stop = start + datetime.timedelta( days=365 )
+	#start = datetime.datetime(2017,5,11)
+	stop = start# + datetime.timedelta( days=365 )
 	step = datetime.timedelta( hours=4 )
 	curr = start
 	while curr <= stop:

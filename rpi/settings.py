@@ -18,16 +18,16 @@ SUNSET_OFF_TIME_DAY_LIST=[
 	datetime.time(0, 30),
 	datetime.time(23, 30) ] 
 
-SUNRISE_TIMER_ACTIVE=False
-SUNRISE_OFF_TIME_DIFF=datetime.timedelta( days = 0 )
+SUNRISE_TIMER_ACTIVE=True
+SUNRISE_OFF_TIME_DIFF=datetime.timedelta( minutes = 0 )
 SUNRISE_ON_TIME_DAY_LIST=[ 
-	datetime.time(6, 0), 
-	datetime.time(6, 0), 
-	datetime.time(6, 0),
-	datetime.time(6, 0),
-	datetime.time(6, 0),
-	datetime.time(9, 0),
-	datetime.time(9, 0) ] 
+	datetime.time(6, 30), 
+	datetime.time(6, 30), 
+	datetime.time(6, 30),
+	datetime.time(6, 30),
+	datetime.time(6, 30),
+	datetime.time(8, 0),
+	datetime.time(8, 0) ] 
 
 LOG_FILE="/home/switch/log/switch.log"
 

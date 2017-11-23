@@ -133,9 +133,9 @@
 				var reqDict = {};				
 				
 				if ( document.getElementById("sunriseenable").checked ) {
-					reqDict[ "SUNRISE" ] == "TRUE";
+					reqDict[ "SUNRISE" ] = "TRUE";
 				} else {
-					reqDict[ "SUNRISE" ] == "FALSE";
+					reqDict[ "SUNRISE" ] = "FALSE";
 				}
 				reqDict[ "SUNRISE_ON_MON" ] = document.getElementById("sunrisestart_mon").value;
 				reqDict[ "SUNRISE_ON_TUE" ] = document.getElementById("sunrisestart_tue").value;

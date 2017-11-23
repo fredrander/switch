@@ -11,7 +11,7 @@ def _setOut( p, state ):
 def init():
 	GPIO.setwarnings(False)
 	GPIO.setmode(GPIO.BOARD)
-	for p in settings.GPIO_CONTROLLED_OUT_PINS:
+	for p in settings.getGpioOutPins():
 		GPIO.setup(p, GPIO.OUT)
 
 
@@ -21,21 +21,20 @@ def done():
 
 
 def setOn():
-	for p in settings.GPIO_CONTROLLED_OUT_PINS:
+	for p in settings.getGpioOutPins():
 		_setOut( p, 0 )
 
 
 def setOff():
-	for p in settings.GPIO_CONTROLLED_OUT_PINS:
+	for p in settings.getGpioOutPins():
 		_setOut( p, 1 )
 
 
 def isOn():
 	pinValue = 0
-	for p in settings.GPIO_CONTROLLED_OUT_PINS:
+	for p in settings.getGpioOutPins():
 		pinValue = GPIO.input( p )
-	if pinValue == 0:
-		return True
-	else:
-		return False
+		if pinValue == 0:
+			return True
+	return False
 

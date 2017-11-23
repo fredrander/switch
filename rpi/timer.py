@@ -8,17 +8,17 @@ from sunrise_sunset import SunriseSunset
 
 def _getRelevantSunriseSunset( now ):
 	# calculate sunrise/sunset for today, tomorrow and yesterday
-	sunriseToday, sunsetToday = SunriseSunset(now, latitude = settings.LATITUDE, longitude = settings.LONGITUDE).calculate()
-	sunriseTomorrow, sunsetTomorrow = SunriseSunset(now + datetime.timedelta( days=1 ), latitude = settings.LATITUDE, longitude = settings.LONGITUDE).calculate()
-	sunriseYesterday, sunsetYesterday = SunriseSunset(now - datetime.timedelta( days=1 ), latitude = settings.LATITUDE, longitude = settings.LONGITUDE).calculate()
+	sunriseToday, sunsetToday = SunriseSunset(now, latitude = settings.getLatitude(), longitude = settings.getLongitude()).calculate()
+	sunriseTomorrow, sunsetTomorrow = SunriseSunset(now + datetime.timedelta( days=1 ), latitude = settings.getLatitude(), longitude = settings.getLongitude()).calculate()
+	sunriseYesterday, sunsetYesterday = SunriseSunset(now - datetime.timedelta( days=1 ), latitude = settings.getLatitude(), longitude = settings.getLongitude()).calculate()
 
 	# use sunrise for tomorrow if we have passed stop trigger for today
-	if now >= sunriseToday + settings.SUNRISE_OFF_TIME_DIFF:
+	if now >= sunriseToday + settings.getSunriseOffTimeDelta():
 		sunrise = sunriseTomorrow
 	else:
 		sunrise = sunriseToday
 	# use sunset from yesterday if we have not passed start trigger for today
-	if now < sunsetToday + settings.SUNSET_ON_TIME_DIFF:
+	if now < sunsetToday + settings.getSunsetOnTimeDelta():
 		sunset = sunsetYesterday
 	else:
 		sunset = sunsetToday
@@ -28,11 +28,11 @@ def _getRelevantSunriseSunset( now ):
 
 def _getOnPeriodSunset( sunset ):
 	# start based on sunset
-	start = sunset + settings.SUNSET_ON_TIME_DIFF
-	stopLocalTime = settings.SUNSET_OFF_TIME_DAY_LIST[start.weekday()]
+	start = sunset + settings.getSunsetOnTimeDelta()
+	stopLocalTime = settings.getSunsetOffTime( start.weekday() )
 	stop = datetime.datetime.combine( start.date(), stopLocalTime )
 	# convert local to UTC
-	tz = pytz.timezone(settings.TIME_ZONE)
+	tz = pytz.timezone( settings.getTimeZone() )
 	stop = tz.localize(stop, is_dst=None).astimezone(pytz.utc).replace(tzinfo=None)
 	
 	# check if stop next day
@@ -44,11 +44,11 @@ def _getOnPeriodSunset( sunset ):
 
 def _getOnPeriodSunrise( sunrise ):
 	# stop based on sunrise
-	stop = sunrise + settings.SUNRISE_OFF_TIME_DIFF
-	startLocalTime = settings.SUNRISE_ON_TIME_DAY_LIST[stop.weekday()]
+	stop = sunrise + settings.getSunriseOffTimeDelta()
+	startLocalTime = settings.getSunriseOnTime( stop.weekday() )
 	start = datetime.datetime.combine( stop.date(), startLocalTime )
 	# convert local to UTC
-	tz = pytz.timezone (settings.TIME_ZONE)
+	tz = pytz.timezone( settings.getTimeZone() )
 	start = tz.localize(start, is_dst=None).astimezone(pytz.utc).replace(tzinfo=None)
 	# check if prev day
 	if stop < start and startLocalTime > datetime.time(12):
@@ -70,7 +70,7 @@ def activePeriods( nowUtc = None ):
 	# get timer start/stop at sunrise
 	startSunrise, stopSunrise = _getOnPeriodSunrise( sunrise )
 	result = {}
-	if settings.SUNSET_TIMER_ACTIVE:
+	if settings.getSunsetEnabled():
 		log.add(log.LEVEL_DEBUG, "Active period at sunset, start: {} UTC, stop: {} UTC".format(startSunset, stopSunset))
 		if now >= startSunset and now < stopSunset:
 			log.add( log.LEVEL_DEBUG, "Timer active at sunset" )
@@ -79,7 +79,7 @@ def activePeriods( nowUtc = None ):
 			log.add( log.LEVEL_DEBUG, "Timer inactive at sunset" )
 			result["sunset"] = { "active" : False, "start" : startSunset, "stop" : stopSunset }
 
-	if settings.SUNRISE_TIMER_ACTIVE:
+	if settings.getSunriseEnabled():
 		log.add(log.LEVEL_DEBUG, "Active period at sunrise, start: {} UTC, stop: {} UTC".format(startSunrise, stopSunrise))
 		if now >= startSunrise and now < stopSunrise:
 			log.add( log.LEVEL_DEBUG, "Timer active at sunrise" )

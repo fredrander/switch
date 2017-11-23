@@ -5,7 +5,7 @@ import subprocess
 
 def check():
     log.add( log.LEVEL_DEBUG, "Check wifi" )
-    exitCode = subprocess.call( settings.WIFI_CHECK_SCRIPT )
+    exitCode = subprocess.call( settings.getCheckWifiFile() )
     result = exitCode == 0
     if result:
         log.add( log.LEVEL_DEBUG, "Wifi up" )
@@ -16,7 +16,7 @@ def check():
 
 def restart():
     log.add( log.LEVEL_DEBUG, "Restart wifi" )
-    exitCode = subprocess.call( settings.WIFI_RESTART_SCRIPT )
+    exitCode = subprocess.call( settings.getRestartWifiFile() )
     result = exitCode == 0
     if result:
         log.add( log.LEVEL_DEBUG, "Wifi restarted" )

@@ -1,43 +1,123 @@
+import ConfigParser
 import datetime
+import calendar
 
-LATITUDE=57.743703
-LONGITUDE=14.383779
-TIME_ZONE="Europe/Stockholm"
 
-UPDATE_INTERVAL_SEC=60
-CHECK_WIFI_INTERVAL_SEC=20
+SETTINGS_FILE = ".settings"
 
-SUNSET_TIMER_ACTIVE=True
-SUNSET_ON_TIME_DIFF=datetime.timedelta( minutes = 0 )
-SUNSET_OFF_TIME_DAY_LIST=[ 
-	datetime.time(23, 30), 
-	datetime.time(23, 30), 
-	datetime.time(23, 30),
-	datetime.time(23, 30),
-	datetime.time(0, 30),
-	datetime.time(0, 30),
-	datetime.time(23, 30) ] 
+config = ConfigParser.ConfigParser()
 
-SUNRISE_TIMER_ACTIVE=True
-SUNRISE_OFF_TIME_DIFF=datetime.timedelta( minutes = 0 )
-SUNRISE_ON_TIME_DAY_LIST=[ 
-	datetime.time(6, 30), 
-	datetime.time(6, 30), 
-	datetime.time(6, 30),
-	datetime.time(6, 30),
-	datetime.time(6, 30),
-	datetime.time(8, 0),
-	datetime.time(8, 0) ] 
 
-LOG_FILE="/home/switch/log/switch.log"
+def init():
+	global config
+	config.read( SETTINGS_FILE )
 
-GPIO_1_OUT_PIN=3
-GPIO_2_OUT_PIN=5
-GPIO_CONTROLLED_OUT_PINS=[GPIO_2_OUT_PIN]
+def write():
+	global config
+	with open( SETTINGS_FILE, "wb" ) as configFile:
+		config.write( configFile )
+	# re-read
+	config.read( SETTINGS_FILE )
 
-SOCKET_IP=""
-SOCKET_PORT=49444
+def getLatitude():
+	return config.getfloat( "position", "latitude" )
 
-WIFI_CHECK_SCRIPT="/home/switch/checkwifi.sh"
-WIFI_RESTART_SCRIPT="/home/switch/restartwifi.sh"
+def setLatitude( lat ):
+	config.set( "position", "latitude", lat )
+
+def getLongitude():
+	return config.getfloat( "position", "longitude" )
+
+def setLongitude( lng ):
+	config.set( "position", "longitude", lng )
+
+def getTimeZone():
+	return config.get( "position", "timezone" )
+
+def setTimeZone( tz ):
+	config.set( "position", "timezone", tz )
+
+def getSunsetEnabled():
+	return config.getboolean( "sunset", "enabled" )
+
+def setSunsetEnabled( enabled ):
+	config.set( "sunset", "enabled", enabled )
+
+def getSunsetOnTimeDelta():
+	diffMinutes = config.getint( "sunset", "on_diff_minutes" )
+	return datetime.timedelta( minutes = diffMinutes )
+
+def setSunsetOnTimeDelta( onDiff ):
+	config.set( "sunset", "on_diff_minutes", onDiff )
+
+def getSunsetOffTime( wday ):
+	dayName = calendar.day_abbr[ wday ]
+	settingName = "off_time_{}".format( dayName ).lower()
+	timeStr = config.get( "sunset", settingName )
+	return datetime.datetime.strptime( timeStr, "%H:%M:%S" ).time()
+
+def setSunsetOffTime( dayAbbr, timeStr ):
+	settingName = "off_time_{}".format( dayAbbr ).lower()
+	if len( timeStr ) == 5:
+		timeStr += ":00"
+	config.set( "sunset", settingName, timeStr )
+
+def getSunriseEnabled():
+	return config.getboolean( "sunrise", "enabled" )
+
+def setSunriseEnabled( enabled ):
+	config.set( "sunrise", "enabled", enabled )
+
+def getSunriseOffTimeDelta():
+	diffMinutes = config.getint( "sunrise", "off_diff_minutes" )
+	return datetime.timedelta( minutes = diffMinutes )
+
+def setSunriseOffTimeDelta( offDiff ):
+	config.set( "sunrise", "off_diff_minutes", offDiff )
+
+def getSunriseOnTime( wday ):
+	dayName = calendar.day_abbr[ wday ]
+	settingName = "on_time_{}".format( dayName ).lower()
+	timeStr = config.get( "sunrise", settingName )
+	return datetime.datetime.strptime( timeStr, "%H:%M:%S" ).time()
+
+def setSunriseOnTime( dayAbbr, timeStr ):
+	settingName = "on_time_{}".format( dayAbbr ).lower()
+	if len( timeStr ) == 5:
+		timeStr += ":00"
+	config.set( "sunrise", settingName, timeStr )
+
+def getGpioOutPins():
+	pinStr = config.get( "gpio", "pins" )
+	result = []
+	splitStr = pinStr.split()
+	for s in splitStr:
+		result.append( int(s) )
+	return result
+
+def getUpdateTimerIntervalSec():
+	return config.getint( "interval", "update_timer_sec" )
+
+def getCheckWifiIntervalSec():
+	return config.getint( "interval", "check_wifi_sec" )
+
+def getLogFile():
+	return config.get( "files", "log_file" )
+
+def getCheckWifiFile():
+	return config.get( "files", "wifi_check_script" )
+
+def getRestartWifiFile():
+	return config.get( "files", "wifi_restart_script" )
+
+def getSocketPort():
+	return config.getint( "socket", "port" )
+
+def getSocketIp():
+	return config.get( "socket", "ip" )
+
+
+if __name__ == "__main__":
+	init()
+	print( getGpioOutPins( ) )
 

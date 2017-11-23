@@ -46,5 +46,5 @@ def add( level, msg ):
 	logStr += msg
 	logStr += "\n"
 	# write to file, stdout if not yet initialized
-	with open( settings.LOG_FILE, "a") as f:
+	with open( settings.getLogFile(), "a") as f:
 		f.write( logStr )

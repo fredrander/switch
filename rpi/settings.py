@@ -95,6 +95,12 @@ def getGpioOutPins():
 		result.append( int(s) )
 	return result
 
+def getOnValue():
+	return config.getint( "gpio", "on_value" )
+
+def getOffValue():
+	return config.getint( "gpio", "off_value" )
+
 def getUpdateTimerIntervalSec():
 	return config.getint( "interval", "update_timer_sec" )
 
@@ -114,10 +120,13 @@ def getSocketPort():
 	return config.getint( "socket", "port" )
 
 def getSocketIp():
-	return config.get( "socket", "ip" )
+	val = config.get( "socket", "ip" )
+	if ( val == "0" ):
+		return ""
+	return val
 
 
 if __name__ == "__main__":
 	init()
-	print( getGpioOutPins( ) )
+	print( getSocketIp( ) )
 

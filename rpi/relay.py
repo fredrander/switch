@@ -22,19 +22,19 @@ def done():
 
 def setOn():
 	for p in settings.getGpioOutPins():
-		_setOut( p, 0 )
+		_setOut( p, settings.getOnValue() )
 
 
 def setOff():
 	for p in settings.getGpioOutPins():
-		_setOut( p, 1 )
+		_setOut( p, settings.getOffValue() )
 
 
 def isOn():
-	pinValue = 0
+	pinValue = settings.getOffValue()
 	for p in settings.getGpioOutPins():
 		pinValue = GPIO.input( p )
-		if pinValue == 0:
+		if pinValue == settings.getOnValue():
 			return True
 	return False
 

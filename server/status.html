@@ -1,6 +1,22 @@
 <html>
 	<head>
 		<style>
+			.divname {
+				width: 100%;
+			}
+
+			.divimg {
+				width: 100%;
+			}
+
+			.divon {
+				width: 100%;
+			}
+
+			.divsun {
+				width: 100%;
+			}
+
 			img {
 				max-width: 90%;
 				max-height: 90%;
@@ -16,20 +32,37 @@
 				text-align: center;
 				font-weight: bold;
 			}
-			.offtext {
+			.suntext {
 				font-size: 2em;
-				color: #f57900;
+				color: #717171;
 				font-family: Arial;
-				text-shadow: #fab97a 0 0 2px;
+				text-shadow: #616161 0 0 2px;
 				text-align: center;
 				font-weight: bold;
+			}
+			.nametext {
+				font-size: 3em;
+				color: #717171;
+				font-family: Arial;
+				text-shadow: #616161 0 0 2px;
+				text-align: center;
+				font-weight: bold;
+				margin-top: 1em;
 			}
 		</style>
 	</head>
 	<body style="background-color:#181818">
-		<div style="width=100%; height=100%;">
+		<div class="divname">
+			<p id="nameTxt" class="nametext"></p>
+		</div>
+		<div class="divimg">
 			<img id="switchImg" src="" onclick="toggleSwitch()"/>
+		</div>
+		<div class="divon">
 			<p id="switchTxt" class="ontext"></p>
+		</div>
+		<div class="divsun">
+			<p id="sunTxt" class="suntext"></p>
 		</div>
 		<script>
 			var onImg= "power_button_green.png";
@@ -99,7 +132,7 @@
 				// SWITCH=TIMER;STATE=ON;SUNRISEACTIVE=FALSE;SUNRISESTART=2017-10-26T04:30:00;
 				// SUNRISESTOP=2017-10-26T06:00:00;SUNSETACTIVE=TRUE;SUNSETSTART=2017-10-25T15:33:00;
 				// SUNSETSTOP=2017-10-25T21:30:00
-				rspStr = JSON.parse(this.responseText);
+				var rspStr = JSON.parse(this.responseText);
 				// create dictonary 
 				var rsp = rspStr.split( ";" );
 				var rspDict = {};
@@ -149,9 +182,37 @@
 				req.open("GET", "getswitch.php?s=" + switchName, true);
 				req.send();
 			}
-			
+		
+			function rspGetSun() {
+				var rspStr = JSON.parse(this.responseText);
+				// create dictonary 
+				var rsp = rspStr.split( ";" );
+				var rspDict = {};
+				for ( i = 0; i < rsp.length; i++ ) {
+					var rspKeyValue = rsp[ i ].split( "=" );
+					if ( rspKeyValue.length > 1 ) {
+						rspDict[ rspKeyValue[ 0 ] ] = rspKeyValue[ 1 ];
+					}
+				}
+
+				var sunStr = "&uarr;" + isoDateTimeUtcStr2LocalTimeStr( rspDict[ "SUNRISE" ] ) +
+					"  " + 
+					"&darr;" + isoDateTimeUtcStr2LocalTimeStr( rspDict[ "SUNSET" ] );
+
+				document.getElementById("sunTxt").innerHTML = sunStr;
+			}
+	
+			function reqGetSun() {
+				var req = new XMLHttpRequest();
+				req.addEventListener("load", rspGetSun);
+				req.open("GET", "getsun.php?s=" + switchName, true);
+				req.send();
+			}
+
 			window.onload=function() {
+				document.getElementById("nameTxt").innerHTML = switchName;
 				reqGetSwitch();
+				reqGetSun();
 				setInterval(reqGetSwitch, 5000);
 			}
 	

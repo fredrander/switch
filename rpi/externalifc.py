@@ -28,13 +28,16 @@ def _handleReq( data ):
 		handler = "timer"
 	elif data == "SWITCH?":
 		log.add( log.LEVEL_DEBUG, "Query switch status from external interface" )
-		handler = "?"
+		handler = "state"
 	elif data == "SETTINGS?":
 		log.add( log.LEVEL_DEBUG, "Request settings from external interface" )
 		handler = "settings"
 	elif data.startswith( "SETTINGS;" ):
 		log.add( log.LEVEL_DEBUG, "New settings from external interface" )
 		handler = "set_settings"
+	elif data == "SUN?":
+		log.add( log.LEVEL_DEBUG, "Query sun info from external interface" )
+		handler = "sun"
 	else:
 		log.add( log.LEVEL_WARNING, "Unknown req. on external interface: {}".format(data) )
 

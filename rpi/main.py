@@ -7,6 +7,8 @@ import sys
 import settings
 import threading
 import wifi
+import datetime
+from sunrise_sunset import SunriseSunset
 
 
 _manualOverride = False
@@ -135,6 +137,14 @@ def _cbExtIfcSetSettings( req ):
 	settings.write()
 	return "OK"
 
+def _cbExtIfcSun( req ):
+	log.add( log.LEVEL_DEBUG, "Req. sun info" )
+	now = datetime.datetime.utcnow()
+	sunriseToday, sunsetToday = SunriseSunset(now, latitude = settings.getLatitude(), longitude = settings.getLongitude()).calculate()
+	rsp = "SUNRISE={}Z;SUNSET={}Z".format( sunriseToday.isoformat(), sunsetToday.isoformat() )
+	return rsp
+	
+
 def _updateSwitch():
 	if not _manualOverride:
 		if timer.active():
@@ -157,9 +167,10 @@ def main():
 	cb = { "on" : _cbExtIfcOn,
 		"off" : _cbExtIfcOff,
 		"timer" : _cbExtIfcTimer,
-		"?" : _cbExtIfcState,
+		"state" : _cbExtIfcState,
 		"settings" : _cbExtIfcGetSettings,
-		"set_settings" : _cbExtIfcSetSettings
+		"set_settings" : _cbExtIfcSetSettings,
+		"sun" : _cbExtIfcSun
 	}
 	externalifc.init( cb )
 	relay.init()

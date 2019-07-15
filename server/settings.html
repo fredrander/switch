@@ -42,11 +42,170 @@
 			input.latlng {
 				width: 100px;
 			}
+			.dbg {
+				color: white;
+			}
 		</style>
 	</head>
 	<body style="background-color:#181818">
 		<div style="width=100%; height=100%;">
 			<form class="settingstext" id="settingsform">
+				Enable timer:
+				<input id="timerenable" type="checkbox"/>
+				<br/>
+				Period 1, start:
+				<input id="timerstart_1" type="time"/>
+				Stop:
+				<input id="timerstop_1" type="time"/>
+				Mon:
+				<input id="timerdays_1_mon" type="checkbox"/>
+				Tue:
+				<input id="timerdays_1_tue" type="checkbox"/>
+				Wed:
+				<input id="timerdays_1_wed" type="checkbox"/>
+				Thu:
+				<input id="timerdays_1_thu" type="checkbox"/>
+				Fri:
+				<input id="timerdays_1_fri" type="checkbox"/>
+				Sat:
+				<input id="timerdays_1_sat" type="checkbox"/>
+				Sun:
+				<input id="timerdays_1_sun" type="checkbox"/>
+				<br/>
+				Period 2, start:
+				<input id="timerstart_2" type="time"/>
+				Stop:
+				<input id="timerstop_2" type="time"/>
+				Mon:
+				<input id="timerdays_2_mon" type="checkbox"/>
+				Tue:
+				<input id="timerdays_2_tue" type="checkbox"/>
+				Wed:
+				<input id="timerdays_2_wed" type="checkbox"/>
+				Thu:
+				<input id="timerdays_2_thu" type="checkbox"/>
+				Fri:
+				<input id="timerdays_2_fri" type="checkbox"/>
+				Sat:
+				<input id="timerdays_2_sat" type="checkbox"/>
+				Sun:
+				<input id="timerdays_2_sun" type="checkbox"/>
+				<br/>
+				Period 3, start:
+				<input id="timerstart_3" type="time"/>
+				Stop:
+				<input id="timerstop_3" type="time"/>
+				Mon:
+				<input id="timerdays_3_mon" type="checkbox"/>
+				Tue:
+				<input id="timerdays_3_tue" type="checkbox"/>
+				Wed:
+				<input id="timerdays_3_wed" type="checkbox"/>
+				Thu:
+				<input id="timerdays_3_thu" type="checkbox"/>
+				Fri:
+				<input id="timerdays_3_fri" type="checkbox"/>
+				Sat:
+				<input id="timerdays_3_sat" type="checkbox"/>
+				Sun:
+				<input id="timerdays_3_sun" type="checkbox"/>
+				<br/>
+				Period 4, start:
+				<input id="timerstart_4" type="time"/>
+				Stop:
+				<input id="timerstop_4" type="time"/>
+				Mon:
+				<input id="timerdays_4_mon" type="checkbox"/>
+				Tue:
+				<input id="timerdays_4_tue" type="checkbox"/>
+				Wed:
+				<input id="timerdays_4_wed" type="checkbox"/>
+				Thu:
+				<input id="timerdays_4_thu" type="checkbox"/>
+				Fri:
+				<input id="timerdays_4_fri" type="checkbox"/>
+				Sat:
+				<input id="timerdays_4_sat" type="checkbox"/>
+				Sun:
+				<input id="timerdays_4_sun" type="checkbox"/>
+				<br/>
+				Period 5, start:
+				<input id="timerstart_5" type="time"/>
+				Stop:
+				<input id="timerstop_5" type="time"/>
+				Mon:
+				<input id="timerdays_5_mon" type="checkbox"/>
+				Tue:
+				<input id="timerdays_5_tue" type="checkbox"/>
+				Wed:
+				<input id="timerdays_5_wed" type="checkbox"/>
+				Thu:
+				<input id="timerdays_5_thu" type="checkbox"/>
+				Fri:
+				<input id="timerdays_5_fri" type="checkbox"/>
+				Sat:
+				<input id="timerdays_5_sat" type="checkbox"/>
+				Sun:
+				<input id="timerdays_5_sun" type="checkbox"/>
+				<br/>
+				Period 6, start:
+				<input id="timerstart_6" type="time"/>
+				Stop:
+				<input id="timerstop_6" type="time"/>
+				Mon:
+				<input id="timerdays_6_mon" type="checkbox"/>
+				Tue:
+				<input id="timerdays_6_tue" type="checkbox"/>
+				Wed:
+				<input id="timerdays_6_wed" type="checkbox"/>
+				Thu:
+				<input id="timerdays_6_thu" type="checkbox"/>
+				Fri:
+				<input id="timerdays_6_fri" type="checkbox"/>
+				Sat:
+				<input id="timerdays_6_sat" type="checkbox"/>
+				Sun:
+				<input id="timerdays_6_sun" type="checkbox"/>
+				<br/>
+				Period 7, start:
+				<input id="timerstart_7" type="time"/>
+				Stop:
+				<input id="timerstop_7" type="time"/>
+				Mon:
+				<input id="timerdays_7_mon" type="checkbox"/>
+				Tue:
+				<input id="timerdays_7_tue" type="checkbox"/>
+				Wed:
+				<input id="timerdays_7_wed" type="checkbox"/>
+				Thu:
+				<input id="timerdays_7_thu" type="checkbox"/>
+				Fri:
+				<input id="timerdays_7_fri" type="checkbox"/>
+				Sat:
+				<input id="timerdays_7_sat" type="checkbox"/>
+				Sun:
+				<input id="timerdays_7_sun" type="checkbox"/>
+				<br/>
+				Period 8, start:
+				<input id="timerstart_8" type="time"/>
+				Stop:
+				<input id="timerstop_8" type="time"/>
+				Mon:
+				<input id="timerdays_8_mon" type="checkbox"/>
+				Tue:
+				<input id="timerdays_8_tue" type="checkbox"/>
+				Wed:
+				<input id="timerdays_8_wed" type="checkbox"/>
+				Thu:
+				<input id="timerdays_8_thu" type="checkbox"/>
+				Fri:
+				<input id="timerdays_8_fri" type="checkbox"/>
+				Sat:
+				<input id="timerdays_8_sat" type="checkbox"/>
+				Sun:
+				<input id="timerdays_8_sun" type="checkbox"/>
+				<br/>
+				<br/>
 				Enable timer at sunrise:
 				<input id="sunriseenable" type="checkbox"/>
 				<br/>
@@ -103,11 +262,11 @@
 			</form>
 			<button id="apply" class="buttonstyle" onclick="handleApply()">Apply</button>
 			
-			<p id="dbg"></p>
+			<p id="dbg" class="dbg"></p>
 		</div>
 		<script>
 			var switchName = getSwitchName();
-
+			var settingsDict = {};
 
 			function getSwitchName() {
 				var switchNameRegex = /.*\?s=(.*)$/g;
@@ -117,40 +276,65 @@
 
 			function rspGetSettings() {
 				rspStr = JSON.parse(this.responseText);
-				var rsp = rspStr.split( ";" );
-				var rspDict = {};
+
+				var rsp = rspStr.split( "\n" );
+				var currSection = "";
 				for ( i = 0; i < rsp.length; i++ ) {
-					var rspKeyValue = rsp[ i ].split( "=" );
-					if ( rspKeyValue.length > 1 ) {
-						rspDict[ rspKeyValue[ 0 ] ] = rspKeyValue[ 1 ];
+
+					if ( rsp[ i ].startsWith( "[" ) ) {
+						
+						var sectionSplit = rsp[ i ].split( "]" );
+						if ( sectionSplit.length > 0 ) {
+							currSection = sectionSplit[ 0 ].substring( 1 );
+						}
+
+					} else {
+						
+						var rspKeyValue = rsp[ i ].split( "=" );
+						if ( rspKeyValue.length > 1 ) {
+							var key = currSection + "_" + rspKeyValue[ 0 ].trim()
+							var value = rspKeyValue[ 1 ].trim();
+							settingsDict[ key ] = value;
+						}
 					}
 				}
 
-				//document.getElementById("dbg").innerHTML = switchIp;
+				document.getElementById("timerenable").checked = (settingsDict[ "timer_enabled" ] == "true");
+				for ( i = 1; i < 9; i++ ) {
+					document.getElementById("timerstart_" + i).value = settingsDict[ "timer_on_time_" + i ];
+					document.getElementById("timerstop_" + i).value = settingsDict[ "timer_off_time_" + i ];
+					document.getElementById("timerdays_" + i + "_mon").checked = ( parseInt(settingsDict[ "timer_days_" + i ]) & (1 << 0) ) != 0;
+					document.getElementById("timerdays_" + i + "_tue").checked = ( parseInt(settingsDict[ "timer_days_" + i ]) & (1 << 1) ) != 0;
+					document.getElementById("timerdays_" + i + "_wed").checked = ( parseInt(settingsDict[ "timer_days_" + i ]) & (1 << 2) ) != 0;
+					document.getElementById("timerdays_" + i + "_thu").checked = ( parseInt(settingsDict[ "timer_days_" + i ]) & (1 << 3) ) != 0;
+					document.getElementById("timerdays_" + i + "_fri").checked = ( parseInt(settingsDict[ "timer_days_" + i ]) & (1 << 4) ) != 0;
+					document.getElementById("timerdays_" + i + "_sat").checked = ( parseInt(settingsDict[ "timer_days_" + i ]) & (1 << 5) ) != 0;
+					document.getElementById("timerdays_" + i + "_sun").checked = ( parseInt(settingsDict[ "timer_days_" + i ]) & (1 << 6) ) != 0;
+				}
 
-				document.getElementById("sunriseenable").checked = (rspDict[ "SUNRISE" ] == "TRUE");
-				document.getElementById("sunrisestart_mon").value = rspDict[ "SUNRISE_ON_MON" ];
-				document.getElementById("sunrisestart_tue").value = rspDict[ "SUNRISE_ON_TUE" ];
-				document.getElementById("sunrisestart_wed").value = rspDict[ "SUNRISE_ON_WED" ];
-				document.getElementById("sunrisestart_thu").value = rspDict[ "SUNRISE_ON_THU" ];
-				document.getElementById("sunrisestart_fri").value = rspDict[ "SUNRISE_ON_FRI" ];
-				document.getElementById("sunrisestart_sat").value = rspDict[ "SUNRISE_ON_SAT" ];
-				document.getElementById("sunrisestart_sun").value = rspDict[ "SUNRISE_ON_SUN" ];
-				document.getElementById("sunrisestop").value = rspDict[ "SUNRISE_OFF_DIFF_MINUTES" ];
+				document.getElementById("sunriseenable").checked = (settingsDict[ "sunrise_enabled" ] == "true");
+				document.getElementById("sunrisestart_mon").value = settingsDict[ "sunrise_on_time_mon" ];
+				document.getElementById("sunrisestart_tue").value = settingsDict[ "sunrise_on_time_tue" ];
+				document.getElementById("sunrisestart_wed").value = settingsDict[ "sunrise_on_time_wed" ];
+				document.getElementById("sunrisestart_thu").value = settingsDict[ "sunrise_on_time_thu" ];
+				document.getElementById("sunrisestart_fri").value = settingsDict[ "sunrise_on_time_fri" ];
+				document.getElementById("sunrisestart_sat").value = settingsDict[ "sunrise_on_time_sat" ];
+				document.getElementById("sunrisestart_sun").value = settingsDict[ "sunrise_on_time_sun" ];
+				document.getElementById("sunrisestop").value = settingsDict[ "sunrise_off_diff_minutes" ];
 
-				document.getElementById("sunsetenable").checked = (rspDict[ "SUNSET" ] == "TRUE");
-				document.getElementById("sunsetstop_mon").value = rspDict[ "SUNSET_OFF_MON" ];
-				document.getElementById("sunsetstop_tue").value = rspDict[ "SUNSET_OFF_TUE" ];
-				document.getElementById("sunsetstop_wed").value = rspDict[ "SUNSET_OFF_WED" ];
-				document.getElementById("sunsetstop_thu").value = rspDict[ "SUNSET_OFF_THU" ];
-				document.getElementById("sunsetstop_fri").value = rspDict[ "SUNSET_OFF_FRI" ];
-				document.getElementById("sunsetstop_sat").value = rspDict[ "SUNSET_OFF_SAT" ];
-				document.getElementById("sunsetstop_sun").value = rspDict[ "SUNSET_OFF_SUN" ];
-				document.getElementById("sunsetstart").value = rspDict[ "SUNSET_ON_DIFF_MINUTES" ];
+				document.getElementById("sunsetenable").checked = (settingsDict[ "sunset_enabled" ] == "true");
+				document.getElementById("sunsetstop_mon").value = settingsDict[ "sunset_off_time_mon" ];
+				document.getElementById("sunsetstop_tue").value = settingsDict[ "sunset_off_time_tue" ];
+				document.getElementById("sunsetstop_wed").value = settingsDict[ "sunset_off_time_wed" ];
+				document.getElementById("sunsetstop_thu").value = settingsDict[ "sunset_off_time_thu" ];
+				document.getElementById("sunsetstop_fri").value = settingsDict[ "sunset_off_time_fri" ];
+				document.getElementById("sunsetstop_sat").value = settingsDict[ "sunset_off_time_sat" ];
+				document.getElementById("sunsetstop_sun").value = settingsDict[ "sunset_off_time_sun" ];
+				document.getElementById("sunsetstart").value = settingsDict[ "sunset_on_diff_minutes" ];
 			
-				document.getElementById("timezone").value = rspDict[ "TIME_ZONE" ];
-				document.getElementById("latitude").value = rspDict[ "LATITUDE" ];
-				document.getElementById("longitude").value = rspDict[ "LONGITUDE" ];
+				document.getElementById("timezone").value = settingsDict[ "position_timezone" ];
+				document.getElementById("latitude").value = settingsDict[ "position_latitude" ];
+				document.getElementById("longitude").value = settingsDict[ "position_longitude" ];
 			}
 
 			function reqGetSettings() {
@@ -164,52 +348,93 @@
 			}
 
 			function handleApply() {
-				
-				var reqDict = {};				
-				
-				if ( document.getElementById("sunriseenable").checked ) {
-					reqDict[ "SUNRISE" ] = "TRUE";
+
+				if ( document.getElementById("timerenable").checked ) {
+					settingsDict[ "timer_enabled" ] = "true";
 				} else {
-					reqDict[ "SUNRISE" ] = "FALSE";
+					settingsDict[ "timer_enabled" ] = "false";
 				}
-				reqDict[ "SUNRISE_ON_MON" ] = document.getElementById("sunrisestart_mon").value;
-				reqDict[ "SUNRISE_ON_TUE" ] = document.getElementById("sunrisestart_tue").value;
-				reqDict[ "SUNRISE_ON_WED" ] = document.getElementById("sunrisestart_wed").value;
-				reqDict[ "SUNRISE_ON_THU" ] = document.getElementById("sunrisestart_thu").value;
-				reqDict[ "SUNRISE_ON_FRI" ] = document.getElementById("sunrisestart_fri").value;
-				reqDict[ "SUNRISE_ON_SAT" ] = document.getElementById("sunrisestart_sat").value;
-				reqDict[ "SUNRISE_ON_SUN" ] = document.getElementById("sunrisestart_sun").value;
-				reqDict[ "SUNRISE_OFF_DIFF_MINUTES" ] = document.getElementById("sunrisestop").value;
+				for ( i = 1; i < 9; i++ ) {
+					settingsDict[ "timer_on_time_" + i ] = document.getElementById("timerstart_" + i).value;
+					settingsDict[ "timer_off_time_" + i ] = document.getElementById("timerstop_" + i).value;
+					var days = 0;
+					if ( document.getElementById("timerdays_" + i + "_mon").checked ) {
+						days = days | (1 << 0);
+					}
+					if ( document.getElementById("timerdays_" + i + "_tue").checked ) {
+						days = days | (1 << 1);
+					}
+					if ( document.getElementById("timerdays_" + i + "_wed").checked ) {
+						days = days | (1 << 2);
+					}
+					if ( document.getElementById("timerdays_" + i + "_thu").checked ) {
+						days = days | (1 << 3);
+					}
+					if ( document.getElementById("timerdays_" + i + "_fri").checked ) {
+						days = days | (1 << 4);
+					}
+					if ( document.getElementById("timerdays_" + i + "_sat").checked ) {
+						days = days | (1 << 5);
+					}
+					if ( document.getElementById("timerdays_" + i + "_sun").checked ) {
+						days = days | (1 << 6);
+					}
+					settingsDict[ "timer_days_" + i ] = days.toString();
+				}
+
+				if ( document.getElementById("sunriseenable").checked ) {
+					settingsDict[ "sunrise_enabled" ] = "true";
+				} else {
+					settingsDict[ "sunrise_enabled" ] = "false";
+				}
+
+				settingsDict[ "sunrise_on_time_mon" ] = document.getElementById("sunrisestart_mon").value;
+				settingsDict[ "sunrise_on_time_tue" ] = document.getElementById("sunrisestart_tue").value;
+				settingsDict[ "sunrise_on_time_wed" ] = document.getElementById("sunrisestart_wed").value;
+				settingsDict[ "sunrise_on_time_thu" ] = document.getElementById("sunrisestart_thu").value;
+				settingsDict[ "sunrise_on_time_fri" ] = document.getElementById("sunrisestart_fri").value;
+				settingsDict[ "sunrise_on_time_sat" ] = document.getElementById("sunrisestart_sat").value;
+				settingsDict[ "sunrise_on_time_sun" ] = document.getElementById("sunrisestart_sun").value;
+				settingsDict[ "sunrise_off_diff_minutes" ] = document.getElementById("sunrisestop").value;
 
 				if ( document.getElementById("sunsetenable").checked ) {
-					reqDict[ "SUNSET" ] = "TRUE";
+					settingsDict[ "sunset_enabled" ] = "true";
 				} else {
-					reqDict[ "SUNSET" ] = "FALSE";
+					settingsDict[ "sunset_enabled" ] = "false";
 				}
-				reqDict[ "SUNSET_OFF_MON" ] = document.getElementById("sunsetstop_mon").value;
-				reqDict[ "SUNSET_OFF_TUE" ] = document.getElementById("sunsetstop_tue").value;
-				reqDict[ "SUNSET_OFF_WED" ] = document.getElementById("sunsetstop_wed").value;
-				reqDict[ "SUNSET_OFF_THU" ] = document.getElementById("sunsetstop_thu").value;
-				reqDict[ "SUNSET_OFF_FRI" ] = document.getElementById("sunsetstop_fri").value;
-				reqDict[ "SUNSET_OFF_SAT" ] = document.getElementById("sunsetstop_sat").value;
-				reqDict[ "SUNSET_OFF_SUN" ] = document.getElementById("sunsetstop_sun").value;
-				reqDict[ "SUNSET_ON_DIFF_MINUTES" ] = document.getElementById("sunsetstart").value;
+
+				settingsDict[ "sunset_off_time_mon" ] = document.getElementById("sunsetstop_mon").value;
+				settingsDict[ "sunset_off_time_tue" ] = document.getElementById("sunsetstop_tue").value;
+				settingsDict[ "sunset_off_time_wed" ] = document.getElementById("sunsetstop_wed").value;
+				settingsDict[ "sunset_off_time_thu" ] = document.getElementById("sunsetstop_thu").value;
+				settingsDict[ "sunset_off_time_fri" ] = document.getElementById("sunsetstop_fri").value;
+				settingsDict[ "sunset_off_time_sat" ] = document.getElementById("sunsetstop_sat").value;
+				settingsDict[ "sunset_off_time_sun" ] = document.getElementById("sunsetstop_sun").value;
+				settingsDict[ "sunset_on_diff_minutes" ] = document.getElementById("sunsetstart").value;
 			
-				reqDict[ "TIME_ZONE" ] = document.getElementById("timezone").value;
-				reqDict[ "LATITUDE" ] = document.getElementById("latitude").value;
-				reqDict[ "LONGITUDE" ] = document.getElementById("longitude").value;
+				settingsDict[ "position_timezone" ] = document.getElementById("timezone").value;
+				settingsDict[ "position_latitude" ] = document.getElementById("latitude").value;
+				settingsDict[ "position_longitude" ] = document.getElementById("longitude").value;
 
 				var postData = "s=" + switchName;
 				postData += "&";
-				postData += "settings=SETTINGS"
-				for ( var key in reqDict ) {
-					if ( reqDict.hasOwnProperty( key ) ) {
-						postData += ";";
-						postData += key;
+				postData += "settings=SETTINGS;"
+				var section = "";
+				for ( var key in settingsDict ) {
+					if ( settingsDict.hasOwnProperty( key ) ) {
+						var settingsSection = key.split("_", 1)[0];
+						if ( settingsSection != section ) {
+							section = settingsSection;
+							postData += "[" + section + "]\n";
+						}
+						postData += key.substring( settingsSection.length + 1 );
 						postData += "=";
-						postData += reqDict[ key ];
+						postData += settingsDict[ key ];
+						postData += "\n";
 					}
 				}
+				
+				//document.getElementById("dbg").innerHTML = postData;
 
 				var req = new XMLHttpRequest();
 				req.addEventListener("load", rspSetSettings);
@@ -225,4 +450,3 @@
 	</body>
 
 </html>
-

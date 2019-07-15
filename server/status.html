@@ -127,6 +127,10 @@
 				return utcDateTime.toLocaleTimeString();
 			}
 
+			function isoDateTimeStr2TimeStr( dateTimeStr ) {
+				return dateTimeStr.substring(11);
+			}
+
 			function rspGetSwitch() {
 				// Example response:
 				// SWITCH=TIMER;STATE=ON;SUNRISEACTIVE=FALSE;SUNRISESTART=2017-10-26T04:30:00;
@@ -164,6 +168,10 @@
 							timeStr = isoDateTimeUtcStr2LocalTimeStr( rspDict[ "SUNSETSTART" ] ) + 
 							" - " +
 							isoDateTimeUtcStr2LocalTimeStr( rspDict[ "SUNSETSTOP" ] );
+						} else if ( rspDict[ "TIMERACTIVE" ] == "TRUE" ) {
+							timeStr = isoDateTimeStr2TimeStr( rspDict[ "TIMERSTART" ] ) +
+							" - " +
+							isoDateTimeStr2TimeStr( rspDict[ "TIMERSTOP" ] );
 						}
 					} else if ( rspDict[ "STATE" ] == "OFF" ) {
 						timeStrClass = "offtext";

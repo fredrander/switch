@@ -19,6 +19,19 @@ def write():
 	# re-read
 	config.read( SETTINGS_FILE )
 
+def toString():
+	result = ""
+	with open( SETTINGS_FILE, "r" ) as configFile:
+		result = configFile.read()
+	return result
+
+def fromString( str ):
+    global config
+    with open( SETTINGS_FILE, "wb" ) as configFile:
+        configFile.write( str )
+    # re-read
+    config.read( SETTINGS_FILE )
+
 def getLatitude():
 	return config.getfloat( "position", "latitude" )
 
@@ -86,6 +99,23 @@ def setSunriseOnTime( dayAbbr, timeStr ):
 	if len( timeStr ) == 5:
 		timeStr += ":00"
 	config.set( "sunrise", settingName, timeStr )
+
+def getTimerEnabled():
+	return config.getboolean( "timer", "enabled" )
+
+def getTimerOnTime( index ):
+	settingName = "on_time_{}".format( index )
+	timeStr = config.get( "timer", settingName )
+	return datetime.datetime.strptime( timeStr, "%H:%M:%S" ).time()
+
+def getTimerOffTime( index ):
+	settingName = "off_time_{}".format( index )
+	timeStr = config.get( "timer", settingName )
+	return datetime.datetime.strptime( timeStr, "%H:%M:%S" ).time()
+
+def getTimerDays( index ):
+	settingName = "days_{}".format( index )
+	return config.getint( "timer", settingName )
 
 def getGpioOutPins():
 	pinStr = config.get( "gpio", "pins" )

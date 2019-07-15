@@ -11,7 +11,7 @@ LEVEL_WARNING = "W"
 LEVEL_ERROR = "E"
 
 # global variables
-_level = LEVEL_INFO
+_level = LEVEL_ERROR
 
 def _checkLevel( level ):
 	global _level

@@ -2,6 +2,7 @@ import socket
 import settings
 import log
 import threading
+import time
 
 
 _callback = {}
@@ -48,10 +49,18 @@ def _handleReq( data ):
 
  
 def _serverThread():
-	log.add( log.LEVEL_DEBUG, "Setup server socket on {}:{}".format( settings.getSocketIp(), settings.getSocketPort() ))
-	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	s.bind(( settings.getSocketIp(), settings.getSocketPort() ))
-	s.listen(1)
+	s = None
+	socketOk = False
+	while not socketOk:
+		try:
+			log.add( log.LEVEL_DEBUG, "Setup server socket on {}:{}".format( settings.getSocketIp(), settings.getSocketPort() ))
+			s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+			s.bind(( settings.getSocketIp(), settings.getSocketPort() ))
+			s.listen(1)
+			socketOk = True
+		except:
+			time.sleep(10)
+
 	while True:
 		conn, addr = s.accept()
 		log.add( log.LEVEL_DEBUG, "Socket connection from {}".format( addr ))

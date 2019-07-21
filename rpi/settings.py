@@ -8,6 +8,14 @@ SETTINGS_FILE = ".settings"
 config = ConfigParser.ConfigParser()
 
 
+def _timeStrToTime( timeStr ):
+	timeVal = None
+	if len(timeStr) == 5:
+		timeVal = datetime.datetime.strptime( timeStr, "%H:%M" ).time()
+	else:
+		timeVal = datetime.datetime.strptime( timeStr, "%H:%M:%S" ).time()
+	return timeVal
+
 def init():
 	global config
 	config.read( SETTINGS_FILE )
@@ -26,79 +34,46 @@ def toString():
 	return result
 
 def fromString( str ):
-    global config
-    with open( SETTINGS_FILE, "wb" ) as configFile:
-        configFile.write( str )
-    # re-read
-    config.read( SETTINGS_FILE )
+	global config
+	with open( SETTINGS_FILE, "wb" ) as configFile:
+		configFile.write( str )
+	# re-read
+	config.read( SETTINGS_FILE )
 
 def getLatitude():
 	return config.getfloat( "position", "latitude" )
 
-def setLatitude( lat ):
-	config.set( "position", "latitude", lat )
-
 def getLongitude():
 	return config.getfloat( "position", "longitude" )
-
-def setLongitude( lng ):
-	config.set( "position", "longitude", lng )
 
 def getTimeZone():
 	return config.get( "position", "timezone" )
 
-def setTimeZone( tz ):
-	config.set( "position", "timezone", tz )
-
 def getSunsetEnabled():
 	return config.getboolean( "sunset", "enabled" )
-
-def setSunsetEnabled( enabled ):
-	config.set( "sunset", "enabled", enabled )
 
 def getSunsetOnTimeDelta():
 	diffMinutes = config.getint( "sunset", "on_diff_minutes" )
 	return datetime.timedelta( minutes = diffMinutes )
 
-def setSunsetOnTimeDelta( onDiff ):
-	config.set( "sunset", "on_diff_minutes", onDiff )
-
 def getSunsetOffTime( wday ):
 	dayName = calendar.day_abbr[ wday ]
 	settingName = "off_time_{}".format( dayName ).lower()
 	timeStr = config.get( "sunset", settingName )
-	return datetime.datetime.strptime( timeStr, "%H:%M:%S" ).time()
-
-def setSunsetOffTime( dayAbbr, timeStr ):
-	settingName = "off_time_{}".format( dayAbbr ).lower()
-	if len( timeStr ) == 5:
-		timeStr += ":00"
-	config.set( "sunset", settingName, timeStr )
+	return _timeStrToTime( timeStr )
 
 def getSunriseEnabled():
 	return config.getboolean( "sunrise", "enabled" )
-
-def setSunriseEnabled( enabled ):
-	config.set( "sunrise", "enabled", enabled )
 
 def getSunriseOffTimeDelta():
 	diffMinutes = config.getint( "sunrise", "off_diff_minutes" )
 	return datetime.timedelta( minutes = diffMinutes )
 
-def setSunriseOffTimeDelta( offDiff ):
-	config.set( "sunrise", "off_diff_minutes", offDiff )
-
 def getSunriseOnTime( wday ):
 	dayName = calendar.day_abbr[ wday ]
 	settingName = "on_time_{}".format( dayName ).lower()
 	timeStr = config.get( "sunrise", settingName )
-	return datetime.datetime.strptime( timeStr, "%H:%M:%S" ).time()
-
-def setSunriseOnTime( dayAbbr, timeStr ):
-	settingName = "on_time_{}".format( dayAbbr ).lower()
-	if len( timeStr ) == 5:
-		timeStr += ":00"
-	config.set( "sunrise", settingName, timeStr )
+	return _timeStrToTime( timeStr )
 
 def getTimerEnabled():
 	return config.getboolean( "timer", "enabled" )
@@ -106,12 +81,12 @@ def getTimerEnabled():
 def getTimerOnTime( index ):
 	settingName = "on_time_{}".format( index )
 	timeStr = config.get( "timer", settingName )
-	return datetime.datetime.strptime( timeStr, "%H:%M:%S" ).time()
+	return _timeStrToTime( timeStr )
 
 def getTimerOffTime( index ):
 	settingName = "off_time_{}".format( index )
 	timeStr = config.get( "timer", settingName )
-	return datetime.datetime.strptime( timeStr, "%H:%M:%S" ).time()
+	return _timeStrToTime( timeStr )
 
 def getTimerDays( index ):
 	settingName = "days_{}".format( index )
@@ -159,4 +134,3 @@ def getSocketIp():
 if __name__ == "__main__":
 	init()
 	print( getSocketIp( ) )
-

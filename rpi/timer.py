@@ -9,10 +9,9 @@ from sunrise_sunset import SunriseSunset
 def _utc2Local( tmUtc ):
 	tzLocal = pytz.timezone( settings.getTimeZone() )
 	tzUtc = pytz.utc
-	result = tmUtc
 	# make date/time aware that it is UTC
-	result = result.replace( tzinfo=tzUtc )
-	result = result.astimezone( tzLocal )
+	tmUtc = tzUtc.localize( tmUtc )
+	result = tmUtc.astimezone( tzLocal )
 	# remove TZ awareness
 	result = result.replace( tzinfo=None )
 	return result
@@ -20,10 +19,9 @@ def _utc2Local( tmUtc ):
 def _local2utc( tm ):
 	tzLocal = pytz.timezone( settings.getTimeZone() )
 	tzUtc = pytz.utc
-	result = tm
 	# make date/time aware that it is local
-	result = result.replace( tzinfo=tzLocal )
-	result = result.astimezone( tzUtc )
+	tm = tzLocal.localize( tm )
+	result = tm.astimezone( tzUtc )
 	# remove TZ awareness
 	result = result.replace( tzinfo=None )
 	return result
@@ -163,6 +161,12 @@ def active( nowUtc = None ):
 if __name__ == "__main__":
 
 	settings.init()
+	
 	now = datetime.datetime.now()
-	timerOn, trimerOff = _getOnPeriodTimer( now )
-	print( "TIMER: {} --> {}".format( timerOn, trimerOff ) )
+	
+	nowUtc = _local2utc( now )
+	nowLocal = _utc2Local( now )
+	
+	print( "now: {}".format(now) )
+	print( "now -> utc: {}".format(nowUtc) )
+	print( "now -> local: {}".format(nowLocal) )

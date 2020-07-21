@@ -10,10 +10,13 @@ config = ConfigParser.ConfigParser()
 
 def _timeStrToTime( timeStr ):
 	timeVal = None
-	if len(timeStr) == 5:
-		timeVal = datetime.datetime.strptime( timeStr, "%H:%M" ).time()
-	else:
-		timeVal = datetime.datetime.strptime( timeStr, "%H:%M:%S" ).time()
+	try:
+		if timeStr.count( ":" ) == 2:
+			timeVal = datetime.datetime.strptime( timeStr, "%H:%M:%S" ).time()
+		else:
+			timeVal = datetime.datetime.strptime( timeStr, "%H:%M" ).time()
+	except:
+		timeVal = datetime.datetime.time()
 	return timeVal
 
 def init():
